@@ -327,8 +327,8 @@
   </div>
 
   <div class="btns">
-    <button id="btn-yes" onclick="sayYes()">Iya, kangen banget 💗</button>
-    <button id="btn-no"  onclick="sayNo()">Enggak juga sih...</button>
+    <button id="btn-yes" onclick="sayYes()">Iya, Sa kangen sekali 💗</button>
+    <button id="btn-no"  onclick="sayNo()">Tidak juga sih...</button>
   </div>
 </div>
 
@@ -339,7 +339,7 @@
   <div class="celeb-glow"></div>
   <span class="c-emoji">🥰</span>
   <h2>Aku juga kangen<br/><em>banget</em>, babe!</h2>
-  <p>Makasih udah jujur 🖤 Kamu selalu ada di pikiran aku, setiap saat ✨</p>
+  <p>Makasih su jujur walau gak ada pilihan 🖤 i miss you, wish you were here ✨</p>
   <p class="c-note">♫ a song that plays whenever i think of you ♫</p>
 </div>
 
@@ -383,22 +383,21 @@
   /* ── No button ── */
   let noCount = 0;
   const noLabels = [
-    "Enggak juga sih...",
+    "tidak juga sih...",
     "Hmm, mungkin dikit?",
     "Ya... mungkin iya",
     "Oke fine, iya deh",
-    "Iya iya aku kangen!!",
+    "Iya iya Sa kangen!!",
     "KANGEN BANGET 😭💗",
   ];
   const toasts = [
-    "Masa sih? Bohong kamu 🥺",
-    "Aku ga percaya deh... 😢",
-    "Hati kamu tau kebenarannya!",
-    "Ngaku aja, jangan gengsi 😩",
-    "Pasti kamu lagi mikirin aku 💭",
-    "Plissss jujur dong 🫶",
-    "Aku bisa ngerasain dari sini 💗",
-    "Sekali lagi dan kamu bakal ngaku!",
+    "Masa sih? Ko tipu 🥺",
+    "Sa tra percaya... 😢",
+    "iyo too?!",
+    "jual mahal sekali 😩",
+    "Pasti lagi senyum-senyum sendiri 💭",
+    "Hahaha jujur dong 🫶",
+    "Sa bisa tau dari sini 💗",
   ];
   const gifs = [
     "https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif",
@@ -414,7 +413,7 @@
 
     if (noCount >= 6) {
       const nb = document.getElementById('btn-no');
-      nb.textContent = 'KANGEN BANGET 😭💗';
+      nb.textContent = 'KANGEN SEKALI 😭💗';
       nb.style.borderColor = 'var(--pink)';
       nb.style.color = 'var(--pink)';
       nb.style.transform = '';
