@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Do You Miss Me? 🥺</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --rose:  #e8547a;
+      --deep:  #c93060;
+      --blush: #fce8ef;
+      --cream: #fef6f9;
+      --ink:   #1e1219;
+      --muted: #a07080;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Animated mesh background */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 55% at 15% 10%, #ffd6e5 0%, transparent 60%),
+        radial-gradient(ellipse 55% 50% at 85% 90%, #ffc2d4 0%, transparent 55%),
+        radial-gradient(ellipse 80% 70% at 50% 50%, #fff0f5 0%, transparent 70%);
+      animation: bgPulse 9s ease-in-out infinite alternate;
+    }
+    @keyframes bgPulse {
+      from { filter: hue-rotate(0deg) brightness(1); }
+      to   { filter: hue-rotate(12deg) brightness(1.03); }
+    }
+
+    /* Floating particles */
+    #particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+    .p {
+      position: absolute; bottom: -60px;
+      animation: rise linear infinite; opacity: 0;
+    }
+    @keyframes rise {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+      8%   { opacity: 0.22; }
+      92%  { opacity: 0.1; }
+      100% { transform: translateY(-115vh) rotate(540deg); opacity: 0; }
+    }
+
+    /* Card */
+    .card {
+      position: relative; z-index: 10;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(20px);
+      border-radius: 36px;
+      padding: 2.6rem 3rem 2.4rem;
+      max-width: 460px; width: 92%;
+      text-align: center;
+      box-shadow: 0 28px 72px rgba(200,50,96,0.18), 0 2px 8px rgba(200,50,96,0.07);
+      border: 1px solid rgba(255,255,255,0.85);
+      animation: cardIn 0.9s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(50px) scale(0.87); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* Music pill */
+    .music-pill {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      background: var(--blush); border-radius: 50px;
+      padding: 0.45rem 1rem 0.45rem 0.55rem;
+      margin-bottom: 1.6rem;
+      animation: fadeDown 0.6s 0.4s ease both; opacity: 0;
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .music-pill button {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, var(--rose), var(--deep));
+      border: none; border-radius: 50%; cursor: pointer;
+      color: white; font-size: 0.65rem;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 10px rgba(200,50,96,0.38);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .music-pill button:hover { transform: scale(1.12); }
+    .pill-label {
+      font-size: 0.72rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); font-weight: 500;
+    }
+    .bars { display: flex; align-items: flex-end; gap: 2px; height: 13px; }
+    .bars span {
+      display: block; width: 3px; background: var(--rose); border-radius: 2px;
+      animation: barBounce 0.9s ease-in-out infinite alternate;
+      transition: height 0.3s;
+    }
+    .bars span:nth-child(1) { height: 5px;  animation-delay: 0s; }
+    .bars span:nth-child(2) { height: 11px; animation-delay: 0.18s; }
+    .bars span:nth-child(3) { height: 8px;  animation-delay: 0.32s; }
+    .bars span:nth-child(4) { height: 13px; animation-delay: 0.12s; }
+    .bars span:nth-child(5) { height: 6px;  animation-delay: 0.28s; }
+    @keyframes barBounce {
+      from { transform: scaleY(0.35); }
+      to   { transform: scaleY(1); }
+    }
+    .bars.paused span { animation-play-state: paused; height: 3px !important; }
+
+    /* Hero emoji */
+    .hero-emoji {
+      font-size: 5.5rem; line-height: 1; display: block;
+      margin-bottom: 1.1rem;
+      animation: wobble 2.6s ease-in-out infinite, fadeDown 0.7s 0.25s ease both;
+      opacity: 0;
+    }
+    @keyframes wobble {
+      0%,100% { transform: scale(1) rotate(0deg); }
+      35%      { transform: scale(1.09) rotate(-5deg); }
+      65%      { transform: scale(1.09) rotate(5deg); }
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.75rem; font-weight: 600;
+      color: var(--ink); line-height: 1.15;
+      margin-bottom: 0.45rem;
+      animation: fadeDown 0.7s 0.35s ease both; opacity: 0;
+    }
+    h1 em { font-style: italic; color: var(--rose); }
+
+    .sub {
+      font-size: 0.87rem; color: var(--muted);
+      letter-spacing: 0.03em; margin-bottom: 1.7rem;
+      font-weight: 300;
+      animation: fadeDown 0.7s 0.48s ease both; opacity: 0;
+    }
+
+    /* GIF frame */
+    .gif-wrap {
+      width: 100%; height: 170px;
+      border-radius: 20px; overflow: hidden;
+      background: var(--blush); margin-bottom: 1.8rem;
+      animation: fadeDown 0.7s 0.58s ease both; opacity: 0;
+    }
+    .gif-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: opacity 0.35s;
+    }
+
+    /* Buttons */
+    .btns {
+      display: flex; gap: 0.9rem;
+      justify-content: center; align-items: center;
+      flex-wrap: wrap;
+      animation: fadeDown 0.7s 0.68s ease both; opacity: 0;
+    }
+    #btn-yes {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem; font-style: italic; font-weight: 600;
+      color: white;
+      background: linear-gradient(135deg, var(--rose), var(--deep));
+      border: none; padding: 0.9rem 2.4rem;
+      border-radius: 50px; cursor: pointer;
+      box-shadow: 0 8px 24px rgba(200,50,96,0.38);
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s;
+    }
+    #btn-yes:hover { transform: scale(1.08) translateY(-2px); box-shadow: 0 12px 32px rgba(200,50,96,0.5); }
+    #btn-yes:active { transform: scale(0.96); }
+
+    #btn-no {
+      font-size: 0.95rem; color: var(--muted);
+      background: transparent;
+      border: 1.5px solid #e8c8d4;
+      padding: 0.88rem 1.8rem; border-radius: 50px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    #btn-no:hover { border-color: var(--rose); color: var(--rose); }
+
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 2rem; left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--ink); color: #fff;
+      padding: 0.65rem 1.6rem; border-radius: 50px;
+      font-size: 0.84rem; opacity: 0;
+      z-index: 999; pointer-events: none;
+      transition: all 0.45s cubic-bezier(0.34,1.56,0.64,1);
+      white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Celebration overlay */
+    #celebration {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 2rem;
+      opacity: 0; pointer-events: none;
+    }
+    #celebration.active {
+      pointer-events: all;
+      animation: celebFade 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+    @keyframes celebFade { to { opacity: 1; } }
+    .celeb-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(140deg, #ff7096 0%, #e8547a 40%, #c93060 100%);
+      z-index: -1;
+    }
+    .c-emoji {
+      font-size: 6rem; display: block;
+      animation: pop 0.6s 0.2s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    #celebration h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem; font-weight: 600;
+      color: white; margin: 1.2rem 0 0.6rem;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.12);
+      line-height: 1.2;
+      animation: pop 0.6s 0.38s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    #celebration p {
+      color: rgba(255,255,255,0.92); font-size: 1.05rem;
+      max-width: 300px; line-height: 1.7; font-weight: 300;
+      animation: pop 0.6s 0.52s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .c-note {
+      margin-top: 1.4rem; font-size: 0.76rem;
+      color: rgba(255,255,255,0.65);
+      letter-spacing: 0.12em; text-transform: uppercase;
+      animation: pop 0.6s 0.66s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes pop {
+      from { opacity: 0; transform: scale(0.5) translateY(20px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed; pointer-events: none; z-index: 300;
+      animation: fall linear forwards;
+    }
+    @keyframes fall {
+      from { opacity: 1; transform: translateY(-40px) rotate(0deg); }
+      to   { opacity: 0; transform: translateY(108vh) rotate(720deg); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div id="particles"></div>
+
+<!-- 
+  Background music: "All of Me" style romantic piano
+  Using a publicly available romantic piano piece.
+  You can replace this src with your own mp3 file!
+-->
+<audio id="bgm" loop preload="auto">
+  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg" />
+  <!-- fallback -->
+  <source src="https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3" type="audio/mpeg" />
+</audio>
+
+<div class="card">
+
+  <div class="music-pill">
+    <button id="music-btn" onclick="toggleMusic()">▶</button>
+    <span class="pill-label" id="pill-label">♪ Tap to play</span>
+    <div class="bars paused" id="bars">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <span class="hero-emoji" id="hero-emoji">🥺</span>
+  <h1>Do you <em>miss me?</em></h1>
+  <p class="sub">Be honest... don't you dare lie 👀</p>
+
+  <div class="gif-wrap">
+    <img id="gif" src="https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif" alt="puppy eyes" />
+  </div>
+
+  <div class="btns">
+    <button id="btn-yes" onclick="sayYes()">Of course I do 💕</button>
+    <button id="btn-no"  onclick="sayNo()">Not really...</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<div id="celebration">
+  <div class="celeb-bg"></div>
+  <span class="c-emoji">🥰</span>
+  <h2>I miss you<br/>so much too!</h2>
+  <p>Thank you for being honest, my love. You're always, always on my mind ✨💗</p>
+  <p class="c-note">♫ this song is playing just for us ♫</p>
+</div>
+
+<script>
+/* ── Particles ── */
+const emojiSet = ['💗','💓','💖','💝','🌸','✨','💕','🌷','💞','🫧'];
+const pLayer = document.getElementById('particles');
+for (let i = 0; i < 24; i++) {
+  const d = document.createElement('div');
+  d.className = 'p';
+  d.textContent = emojiSet[i % emojiSet.length];
+  d.style.cssText = `left:${Math.random()*100}%;font-size:${(.7+Math.random()*1.2).toFixed(2)}rem;animation-duration:${(8+Math.random()*10).toFixed(1)}s;animation-delay:${(Math.random()*12).toFixed(1)}s`;
+  pLayer.appendChild(d);
+}
+
+/* ── Music ── */
+const bgm = document.getElementById('bgm');
+let playing = false;
+
+// Auto-start on first any click
+document.body.addEventListener('click', () => { if (!playing) startMusic(); }, { once: true });
+
+function startMusic() {
+  bgm.volume = 0.4;
+  bgm.play().then(() => {
+    playing = true;
+    document.getElementById('music-btn').textContent = '⏸';
+    document.getElementById('pill-label').textContent = '♪ Romantic Piano';
+    document.getElementById('bars').classList.remove('paused');
+  }).catch(() => {});
+}
+
+function toggleMusic() {
+  if (playing) {
+    bgm.pause(); playing = false;
+    document.getElementById('music-btn').textContent = '▶';
+    document.getElementById('pill-label').textContent = '♪ Paused';
+    document.getElementById('bars').classList.add('paused');
+  } else { startMusic(); }
+}
+
+/* ── No button ── */
+let noCount = 0;
+const noLabels  = ["Not really...","Hmm, not sure","Maybe a little?","Ugh, okay... maybe","Actually... yes","YES I DO!! 😭"];
+const toasts    = ["Come on, be honest 🥺","I don't believe you 😢","Your heart knows the truth!","Stop lying to yourself 😩","You were just thinking of me 💭","Plssss just say it 🫶","I can feel it from here 💗","One more click and you'll finally admit it!"];
+const gifs      = [
+  "https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif",
+  "https://media.giphy.com/media/d2lcHJTG5Tscg/giphy.gif",
+  "https://media.giphy.com/media/hHxTQkcjmHUTC/giphy.gif",
+  "https://media.giphy.com/media/OPU6wzx8JrHna/giphy.gif",
+  "https://media.giphy.com/media/26ufcVAp3AiJJsrIs/giphy.gif",
+];
+const emojiSeq  = ['🥺','😢','😭','💔','😩','🫶','🥹'];
+
+function sayNo() {
+  noCount++;
+
+  // Force yes after 6 clicks
+  if (noCount >= 6) {
+    const nb = document.getElementById('btn-no');
+    nb.textContent = 'YES I DO!! 😭';
+    nb.style.borderColor = 'var(--rose)';
+    nb.style.color = 'var(--rose)';
+    nb.style.transform = '';
+    setTimeout(sayYes, 700);
+    return;
+  }
+
+  // Update label
+  document.getElementById('btn-no').textContent = noLabels[Math.min(noCount, noLabels.length-1)];
+
+  // Grow Yes button
+  const byBtn = document.getElementById('btn-yes');
+  const s = Math.min(1 + noCount * 0.18, 2.2);
+  byBtn.style.transform = `scale(${s})`;
+  byBtn.style.boxShadow = `0 ${8+noCount*3}px ${24+noCount*7}px rgba(200,50,96,${Math.min(.38+noCount*.06,.72)})`;
+
+  // Change emoji
+  document.getElementById('hero-emoji').textContent = emojiSeq[Math.min(noCount, emojiSeq.length-1)];
+
+  // Swap gif with fade
+  const gifEl = document.getElementById('gif');
+  gifEl.style.opacity = '0';
+  setTimeout(() => {
+    gifEl.src = gifs[Math.min(noCount, gifs.length-1)] + '?r=' + Date.now();
+    gifEl.style.opacity = '1';
+  }, 350);
+
+  showToast(toasts[Math.min(noCount-1, toasts.length-1)]);
+  wiggleNo();
+}
+
+function wiggleNo() {
+  const el = document.getElementById('btn-no');
+  const dx = (Math.random()-.5)*170, dy = (Math.random()-.5)*110;
+  el.style.transition = 'transform .3s cubic-bezier(.34,1.56,.64,1)';
+  el.style.transform = `translate(${dx}px,${dy}px)`;
+  setTimeout(() => { el.style.transition = 'transform .5s cubic-bezier(.34,1.56,.64,1)'; el.style.transform=''; }, 480);
+}
+
+/* ── Toast ── */
+let tTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(tTimer);
+  tTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ── Yes! ── */
+function sayYes() {
+  if (!playing) startMusic();
+  for (let i = 0; i < 45; i++) setTimeout(spawnConfetti, i * 65);
+  setTimeout(() => document.getElementById('celebration').classList.add('active'), 280);
+}
+
+function spawnConfetti() {
+  const el = document.createElement('div');
+  el.className = 'confetti';
+  el.textContent = emojiSet[Math.floor(Math.random()*emojiSet.length)];
+  el.style.cssText = `left:${Math.random()*100}vw;font-size:${(.9+Math.random()*1.5).toFixed(2)}rem;animation-duration:${(1.4+Math.random()*2).toFixed(2)}s`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 4500);
+}
+</script>
+</body>
+</html>
